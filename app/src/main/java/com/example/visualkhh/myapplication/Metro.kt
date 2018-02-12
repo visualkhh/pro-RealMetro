@@ -39,6 +39,7 @@ class Metro :View, View.OnTouchListener{
         canvas.drawLine(5f,5f, 20f,20f, paint)
 
 
+        Log.d("onDraw", "size: w:"+width+" h:"+height);
 
 //        if (pointList.size() < 2) return
 //        for (i in 1 until pointList.size()) {

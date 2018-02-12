@@ -8,12 +8,12 @@
         tools:context="com.example.visualkhh.myapplication.MainActivity" android:orientation="vertical">
 
     <com.example.visualkhh.myapplication.Metro
-            android:layout_width="match_parent"
-            android:id="@+id/metro2" android:layout_weight="1" android:layout_height="580dp"/>
+            android:id="@+id/metro2" android:layout_weight="1" android:visibility="visible"
+            android:layout_width="match_parent" android:layout_height="match_parent"/>
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:layout_weight="4">
+            android:layout_height="match_parent" android:layout_weight="9">
         <Button
                 android:text="Button"
                 android:layout_width="wrap_content"

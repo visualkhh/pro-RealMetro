@@ -33,6 +33,9 @@ class MainActivity : AbstractAsyncActivity () {
         button2.setOnClickListener{
             MetroManager.queuePut("1002")
         }
+        button3.setOnClickListener{
+            MetroManager.draw("1001")
+        }
 
 
 

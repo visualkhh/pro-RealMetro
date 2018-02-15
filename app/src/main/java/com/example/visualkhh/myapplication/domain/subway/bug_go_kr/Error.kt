@@ -1,4 +1,4 @@
-package com.example.visualkhh.myapplication.domain
+package com.example.visualkhh.myapplication.domain.subway.bug_go_kr
 
 class Error {
     constructor(errorCode: String = "", errorMessage: String = "") {

@@ -4,17 +4,16 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
 import com.example.visualkhh.AbstractAsyncActivity
-import com.example.visualkhh.myapplication.domain.Subway
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.example.visualkhh.myapplication.domain.subway.SubwayId
+import com.example.visualkhh.myapplication.domain.subway.bug_go_kr.Subway
 import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.jackson.jacksonDeserializerOf
-import com.github.kittinunf.fuel.jackson.responseObject
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_main.*
+import java.nio.charset.Charset
 
 
 class MainActivity : AbstractAsyncActivity () {
 
-
-    val subWays : LinkedHashMap<String, Subway> = LinkedHashMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,107 +22,92 @@ class MainActivity : AbstractAsyncActivity () {
 
     override fun onStart() {
         super.onStart()
-//        var at = Subway(); at.id="1001"; at.name="1호선";
-//        subWays.put("1001", at)
-        subWays.put("1001", Subway(id = "1001", name = "1호선"))
-//        subWays.put("1002", Subway(id = "1002", name = "2호선"))
-//        subWays.put("1003", Subway(id = "1003", name = "3호선"))
-//        subWays.put("1004", Subway(id = "1004", name = "4호선"))
-//        subWays.put("1005", Subway(id = "1005", name = "5호선"))
-//        subWays.put("1006", Subway(id = "1006", name = "6호선"))
-//        subWays.put("1007", Subway(id = "1007", name = "7호선"))
-//        subWays.put("1008", Subway(id = "1008", name = "8호선"))
-//        subWays.put("1009", Subway(id = "1009", name = "9호선"))
-//        subWays.put("1091", Subway(id = "1091", name = "우이신설경의전철"))
-//        subWays.put("1075", Subway(id = "1075", name = "분당선"))
-//        subWays.put("1065", Subway(id = "1065", name = "공항철도"))
-//        subWays.put("1069", Subway(id = "1069", name = "인천1호선"))
-//        subWays.put("1069", Subway(id = "1069", name = "인천1호선"))
-//        subWays.put("1077", Subway(id = "1077", name = "신붕당선"))
-//        subWays.put("1063", Subway(id = "1063", name = "경의중앙"))
-//        subWays.put("1067", Subway(id = "1067", name = "경춘선"))
-//        subWays.put("1071", Subway(id = "1071", name = "수인선"))
-//        subWays.put("1079", Subway(id = "1079", name = "용인에버라인"))
-//        subWays.put("1081", Subway(id = "1081", name = "의정부전철"))
+        MetroManager.startTracking()
 
-        subWays.forEach{entry ->
-             SubwayHttpRequestTask().execute(entry.value)
-            Thread.sleep(1000);
 
+
+
+        button1.setOnClickListener{
+            MetroManager.queuePut("1001")
+        }
+        button2.setOnClickListener{
+            MetroManager.queuePut("1002")
         }
 
-//        HttpRequestTask().execute()
+
+
+
+
     }
 
-
-    // ***************************************
-    // Private methods
-    // ***************************************
-    private fun refreshSubwayResults(response: Subway?) {
-        if (response == null) {
-            return
-        }
-        Log.d("subWay", response.toString())
-    }
+//    private fun refreshSubwayResults(response: Subway?) {
+//        if (response == null) {
+//            return
+//        }
+//        Log.d("subWay", response.toString())
+//    }
 
 
-    // ***************************************
-    // Private classes
-    // ***************************************
-    data class HttpBinUserAgentModel(var userAgent: String = "")
-    private inner class SubwayHttpRequestTask : AsyncTask<Subway, Void, Subway>() {
-        override fun onPreExecute() {
-            showLoadingProgressDialog()
-        }
-        override fun doInBackground(vararg params: Subway): Subway {
-            try {
-                // The URL for making the GET request
-                //https://github.com/kittinunf/Fuel
-//                val uri = UriComponentsBuilder.newInstance().scheme("http").host("bus.go.kr").path("getXml2.jsp").queryParam("subwayId",params[0].id).build().toUri()
-//                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).response {
-//                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms").responseString();
-//                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).responseObject(jacksonDeserializerOf<HttpBinUserAgentModel>()) { _, _, result ->
-//                    Log.d("--","asdasd")
+
+
+//
+//    private inner class SubwayHttpRequestTask : AsyncTask<LinkedHashMap<SubwayId, Subway?>, Void, Void>() {
+//        override fun onPreExecute() {
+//        }
+//        override fun doInBackground(vararg params: Subway): Void {
+//            var rSubway : Subway = Subway();
+//            try {
+//                // The URL for making the GET request
+//                //https://github.com/kittinunf/Fuel
+////                val uri = UriComponentsBuilder.newInstance().scheme("http").host("bus.go.kr").path("getXml2.jsp").queryParam("subwayId",params[0].id).build().toUri()
+////                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).response {
+////                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms").responseString();
+////                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).responseObject(jacksonDeserializerOf<HttpBinUserAgentModel>()) { _, _, result ->
+////                    Log.d("--","asdasd")
+////                }
+//
+////                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).response { request, response, result ->
+////                    result.fold(success = { json ->
+////                        Log.d("qdp success", json.toString())
+////                    }, failure = { error ->
+////                        Log.e("qdp error", error.toString())
+////                    })
+////                    Log.d("-0-0","asdasd")
+////                }
+//                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms",listOf("subwayId" to params[0].id)).responseString(Charset.forName("EUC-KR")) { request, response, result ->
+//                    val (d, e) = result
+//                    val data = d
+//                    val error = e
+//
+//                    val request = request
+//                    val response = response
+//                    val gson = Gson()
+//                    rSubway = gson.fromJson(data, Subway::class.java)
+//                    Log.d("Request", data.toString())
 //                }
-
-//                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).response { request, response, result ->
-//                    result.fold(success = { json ->
-//                        Log.d("qdp success", json.toString())
-//                    }, failure = { error ->
-//                        Log.e("qdp error", error.toString())
-//                    })
-//                    Log.d("-0-0","asdasd")
-//                }
-                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).responseObject<Subway>{_,_,result->
-                    Log.e("qdp error", result.toString())
-                };
-
-//                Fuel.get("/user-agent")
-//                        .responseObject(jacksonDeserializerOf<HttpBinUserAgentModel>()) { _, _, result ->
-//                            assertThat(result.component1(), instanceOf(HttpBinUserAgentModel::class.java))
-//                            assertThat(result.component1()?.userAgent, not(""))
-//                            assertThat(result.component2(), instanceOf(FuelError::class.java))
-//                        }
-
-
-//                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).responseObject<Subway>{ _, _, result ->
-//                Log.d("--","asdasd");
+////                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).responseObject(jacksonDeserializerOf<Subway>()) { _, _, result ->
+////                }
+////                Fuel.get("/user-agent")
+////                        .responseObject(jacksonDeserializerOf<HttpBinUserAgentModel>()) { _, _, result ->
+////                            assertThat(result.component1(), instanceOf(HttpBinUserAgentModel::class.java))
+////                            assertThat(result.component1()?.userAgent, not(""))
+////                            assertThat(result.component2(), instanceOf(FuelError::class.java))
+////                        }
+//
+//
+////                Fuel.post("http://m.bus.go.kr/mBus/subway/getStatnByRoute.bms", listOf("subwayId" to params[0].id)).responseObject<Subway>{ _, _, result ->
+////                Log.d("--","asdasd");
+////            }
+//
+//
+//            } catch (e: Exception) {
+//                Log.e(AbstractAsyncActivity.TAG, e.message, e)
 //            }
-
-
-            } catch (e: Exception) {
-                Log.e(AbstractAsyncActivity.TAG, e.message, e)
-            }
-            return Subway()
-        }
-        override fun onPostExecute(result: Subway) {
-            dismissProgressDialog()
-            refreshSubwayResults(result)
-        }
-    }
-
-
-
+//            return rSubway
+//        }
+//        override fun onPostExecute(result :Void) {
+//        }
+//    }
 
 
 
@@ -163,6 +147,24 @@ class MainActivity : AbstractAsyncActivity () {
 //            dismissProgressDialog()
 //            refreshResults(result)
 //        }
+//    }
+
+
+
+
+
+    //Deserializer
+//    class HttpBinHeadersDeserializer : ResponseDeserializable<Subway> {
+//
+//        override fun deserialize(content: String): Subway {
+//            val json = JSONObject(content)
+//            val headers = json.getJSONObject("headers")
+//            val results = headers.keys().asSequence().associate { Pair(it, headers.getString(it)) }
+//            val model = Subway()
+//            model.headers = results
+//            return model
+//        }
+//
 //    }
 
 }

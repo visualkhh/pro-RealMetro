@@ -1,7 +1,5 @@
 package com.example.visualkhh.myapplication.domain.geometry.google
 
-import com.example.visualkhh.myapplication.domain.geometry.Location
-
 data class Geocode(val status: String, val results : List<Result>) {
 
 

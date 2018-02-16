@@ -1,15 +1,8 @@
 package com.example.visualkhh.myapplication
 
-import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import com.example.visualkhh.AbstractAsyncActivity
-import com.example.visualkhh.myapplication.domain.subway.SubwayId
-import com.example.visualkhh.myapplication.domain.subway.bug_go_kr.Subway
-import com.github.kittinunf.fuel.Fuel
-import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
-import java.nio.charset.Charset
 
 
 class MainActivity : AbstractAsyncActivity () {
@@ -34,7 +27,7 @@ class MainActivity : AbstractAsyncActivity () {
             MetroManager.queuePut("1002")
         }
         button3.setOnClickListener{
-            MetroManager.draw("1001")
+//            MetroManager.draw("1001")
         }
 
 

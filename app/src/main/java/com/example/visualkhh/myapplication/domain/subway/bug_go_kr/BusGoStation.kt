@@ -1,7 +1,7 @@
 package com.example.visualkhh.myapplication.domain.subway.bug_go_kr
 
 
-data class Station(
+data class BusGoStation(
         val statnTrnsit: String = "",
         val directAt: String = "",
         val existYn1: String = "",

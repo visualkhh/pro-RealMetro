@@ -2,10 +2,10 @@ package com.example.visualkhh.myapplication.domain.subway.bug_go_kr
 
 
 //https://blog.frankel.ch/comparing-lombok-and-kotlin/
-class Subway {
+class BusGoLine {
 
     constructor()
-    constructor(error: Error = Error(), resultList: List<Station> = ArrayList()) {
+    constructor(error: BusGoError = BusGoError(), resultList: List<BusGoStation> = ArrayList()) {
 //        this.id = id
         this.error = error
 //        this.name = name
@@ -15,7 +15,7 @@ class Subway {
 //    var id: String = ""
 //    var name: String = ""
 
-    var error: Error = Error();
+    var error: BusGoError = BusGoError();
 
-    var resultList: List<Station> = ArrayList()
+    var resultList: List<BusGoStation> = ArrayList()
 }

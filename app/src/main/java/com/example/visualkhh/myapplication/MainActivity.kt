@@ -1,7 +1,10 @@
 package com.example.visualkhh.myapplication
 
+import android.graphics.Canvas
 import android.os.Bundle
 import com.example.visualkhh.AbstractAsyncActivity
+import com.example.visualkhh.myapplication.view.MetroDrawable
+import com.example.visualkhh.myapplication.view.MetroViewSize
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -15,19 +18,24 @@ class MainActivity : AbstractAsyncActivity () {
 
     override fun onStart() {
         super.onStart()
-        MetroManager.startTracking()
+//        MetroManager.startTracking()
+
 
 
 
 
         button1.setOnClickListener{
-            MetroManager.queuePut("1001")
+//            MetroManager.queuePut("1001")
         }
         button2.setOnClickListener{
-            MetroManager.queuePut("1002")
+//            MetroManager.queuePut("1002")
         }
         button3.setOnClickListener{
-//            MetroManager.draw("1001")
+            metro.draws.clear()
+            for ((k,v) in MetroManager.getStation()){
+                metro.draws.addAll(v)
+                metro.invalidate()
+            }
         }
 
 

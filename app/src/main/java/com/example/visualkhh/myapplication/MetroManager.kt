@@ -37,12 +37,17 @@ object  MetroManager {
     )
 
     val lines: LinkedHashMap<Line, List<Station>> = LinkedHashMap()
-
+//    var minLat: Float = Float.MAX_VALUE
+//    var maxLat: Float = Float.MIN_VALUE
+//    var minLng: Float = Float.MAX_VALUE
+//    var maxLng: Float = Float.MIN_VALUE
 
     val busGolines: LinkedHashMap<Line, BusGoLine> = LinkedHashMap()
     var subwayProvider : NaverSubwayProvider? = null
     val threadSize = 2
     val queue = LinkedBlockingDeque<Line>(100)
+
+
 
 
     fun queuePut(id: String){
@@ -75,7 +80,13 @@ object  MetroManager {
         }
     }
 
-    fun reloadStation(){
+    fun getStation(): LinkedHashMap<Line, List<Station>> {
+        if(lines.size<=0){
+            reloadStation()
+        }
+        return lines
+    }
+    private fun reloadStation(){
         Fuel.get("https://map.naver.com/external/SubwayProvide.xml?requestFile=metaData.json&readPath=1000&version=5.4").responseString(Charset.forName("UTF-8")) { request, response, result ->
             val (data, error) = result
                 if (null == error) {
@@ -83,12 +94,22 @@ object  MetroManager {
                     var personList: List<NaverSubwayProvider> = Gson().fromJson(data, object : TypeToken<List<NaverSubwayProvider>>() {}.type)
                     subwayProvider = personList.get(0)
                     /////////parsing
+//                    minLat = Float.MAX_VALUE
+//                    maxLat = Float.MIN_VALUE
+//                    minLng = Float.MAX_VALUE
+//                    maxLng = Float.MIN_VALUE
+
                     subwayProvider!!.subwayTotalLineSection.forEach { lineIt ->
                         val line = Line(lineIt.stationCode, color = lineIt.color)
                         val stations = ArrayList<Station>()
                         val list = subwayProvider!!.realInfo.filter { line.id==it.logicalLine.code }.forEach { stationIt ->
-                            val station = Station(stationIt.id, stationIt.latitude.toDouble(), stationIt.longitude.toDouble(), name = stationIt.name, color = lineIt.color)
+                            val station = Station(stationIt.id, stationIt.latitude.toFloat(), stationIt.longitude.toFloat(), name = stationIt.name, color = lineIt.color)
                             line.name = stationIt.logicalLine.name
+//                            minLat = Math.min(station.lat, minLat)
+//                            maxLat = Math.max(station.lat, maxLat)
+//                            minLng = Math.min(station.lng, minLng)
+//                            maxLng = Math.max(station.lng, maxLng)
+//                            if("2".equals(stationIt.logicalLine.code))
                             stations.add(station)
                         }
 

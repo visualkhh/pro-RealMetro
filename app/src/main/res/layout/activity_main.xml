@@ -18,8 +18,8 @@
         <!--&gt;-->
     <!--</fragment>-->
 
-    <com.example.visualkhh.myapplication.Metro
-            android:id="@+id/metro2" android:layout_weight="1" android:visibility="visible"
+    <com.example.visualkhh.myapplication.view.MetroView
+            android:id="@+id/metro" android:layout_weight="1" android:visibility="visible"
             android:layout_width="match_parent" android:layout_height="match_parent"/>
     <LinearLayout
             android:orientation="horizontal"

@@ -1,45 +1,60 @@
-package com.example.visualkhh.myapplication
+package com.example.visualkhh.myapplication.view
 
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.R.attr.y
-import android.R.attr.x
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
+import java.util.ArrayList
+import android.R.attr.y
+import android.R.attr.x
+import android.support.v4.view.MotionEventCompat.getPointerId
 
 
-class Metro :View, View.OnTouchListener{
+
+
+class MetroView :View, View.OnTouchListener{
+    var defaultSize = MetroViewSize()
+    var draws = ArrayList<MetroDrawable>()
+//    var draws = ArrayList<Class<out MetroDrawable>>()
+
+
     constructor(context: Context?) : super(context){
-        init();
+        init()
     }
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs){
-        init();
+        init()
     }
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr){
-        init();
+        init()
     }
 
     private fun init() {
         setOnTouchListener(this);
         setFocusableInTouchMode(true);  // 이벤트가 계속해서 발생하기 위해
+        defaultSize = MetroViewSize(width, height, 0)
     }
 
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        canvas.drawColor(Color.WHITE)
-        val paint = Paint()
-        paint.color = Color.BLACK
-        paint.strokeWidth =5f
-        canvas.drawLine(5f,5f, 20f,20f, paint)
+
+        var minMax = MetroViewScaleMinMax(Float.MAX_VALUE,Float.MIN_VALUE,Float.MAX_VALUE,Float.MIN_VALUE)
+        draws.forEach{
+            minMax.minY = Math.min(it.getY(), minMax.minY)
+            minMax.maxY = Math.max(it.getY(), minMax.maxY)
+            minMax.minX = Math.min(it.getX(), minMax.minX)
+            minMax.maxX = Math.max(it.getX(), minMax.maxX)
+        }
+        draws.forEach{it.draw(minMax, canvas)}
 
 
-        Log.d("onDraw", "size: w:"+width+" h:"+height);
+
+
 
 //        if (pointList.size() < 2) return
 //        for (i in 1 until pointList.size()) {
@@ -70,7 +85,13 @@ class Metro :View, View.OnTouchListener{
                 invalidate()         // 그림 다시 그리기
                 r=true
             }
-
+            MotionEvent.ACTION_POINTER_DOWN -> {
+                var r = ""
+                for (i in 0 until event.pointerCount) {
+                    r += ", "+i+"(id:"+event.getPointerId(i)+", x:"+ event.getX(i)+", y:"+event.getY(i)
+                }
+                Log.d("phoro", r+" 멀티 터")
+            }
             MotionEvent.ACTION_UP -> {
                 Log.d("phoro", "손가락 땠음")
             }

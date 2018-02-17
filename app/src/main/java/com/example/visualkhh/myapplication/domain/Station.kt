@@ -20,7 +20,7 @@ class Station(val id: String,val lat:Float, val lng: Float,
                    val type: TYPE = TYPE.NORMAL) : MetroDrawable{
     enum class TYPE { NORMAL, BROKEN }
 
-    override fun draw(minMax: MetroViewScaleMinMax, canvas: Canvas) {
+    override fun draw(minMax: MetroViewScaleMinMax, movePoint: PointF, canvas: Canvas) {
 
 
         val minX = 0
@@ -65,8 +65,8 @@ class Station(val id: String,val lat:Float, val lng: Float,
         val paint = Paint()
         paint.color = Color.parseColor(color)
         paint.strokeWidth = 5f
-        canvas.drawCircle(catX, catY, 5f, paint)
-        Log.d("onDraw", "size: w:"+canvas.width+" h:"+canvas.height+ "  --> "+lat+" "+ lng)
+        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, 5f, paint)
+//        Log.d("onDraw", "size: w:"+canvas.width+" h:"+canvas.height+ "  --> "+lat+" "+ lng)
 
 
 

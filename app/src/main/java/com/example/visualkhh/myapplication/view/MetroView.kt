@@ -37,9 +37,14 @@ class MetroView :View, View.OnTouchListener{
     }
 
 
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        val paint = Paint()
+        paint.color = Color.BLACK
+        paint.style = Paint.Style.FILL
+        canvas.drawRect(Rect(0,0,width,height), paint)
 
         var minMax = MetroViewScaleMinMax(Float.MAX_VALUE,Float.MIN_VALUE,Float.MAX_VALUE,Float.MIN_VALUE)
         draws.forEach{
@@ -48,13 +53,9 @@ class MetroView :View, View.OnTouchListener{
             minMax.minX = Math.min(it.getX(), minMax.minX)
             minMax.maxX = Math.max(it.getX(), minMax.maxX)
         }
-        draws.forEach{it.draw(minMax, movePoint, canvas)}
+        draws.forEach{it.draw(minMax, movePoint, zoom, canvas)}
 
 
-        val paint = Paint()
-        paint.color = Color.YELLOW
-        paint.style = Paint.Style.FILL
-        canvas.drawRect(doubleDownRect, paint)
 
 
 //        if (pointList.size() < 2) return
@@ -111,6 +112,9 @@ class MetroView :View, View.OnTouchListener{
 
 
                 if(event.pointerCount>1){
+
+                    downPoint = PointF(event.x, event.y)
+
                     val point1 = PointF(event.getX(0),event.getY(0))
                     val point2 = PointF(event.getX(1),event.getY(1))
 
@@ -134,7 +138,16 @@ class MetroView :View, View.OnTouchListener{
                      */
                     val dat = doubleDownRect.width() * doubleDownRect.height()
                     val at = atDoubleDownRect.width() * atDoubleDownRect.height()
-                    zoom = (at.toFloat() / dat.toFloat()).toFloat() * 100f
+//                    val ch = ((at.toFloat() / dat.toFloat()).toFloat() * 100f) - 100f
+//                    val czoom = zoom + (ch / 2)
+                    val ch = ((at.toFloat() / dat.toFloat()).toFloat() * 100f) - 100f
+                    var czoom = zoom + (ch / 2)
+                    if(czoom<=1000 && czoom>=10){
+                        zoom = czoom
+                    }
+
+
+                    Log.d("MetroView", "ddRect w:"+doubleDownRect.width()+" h:"+doubleDownRect.height())
 
                 }
 
@@ -187,5 +200,16 @@ class MetroView :View, View.OnTouchListener{
             }
         }
         return r;
+    }
+
+
+
+    fun defaultSetting(){
+        zoom = 100f
+        downPoint = null
+        doubleDownRect = Rect(0,0,0,0)
+        movePoint = PointF(0f,0f)
+        upMovePoint = PointF(0f,0f)
+        invalidate()
     }
 }

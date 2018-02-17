@@ -20,7 +20,7 @@ class Station(val id: String,val lat:Float, val lng: Float,
                    val type: TYPE = TYPE.NORMAL) : MetroDrawable{
     enum class TYPE { NORMAL, BROKEN }
 
-    override fun draw(minMax: MetroViewScaleMinMax, movePoint: PointF, canvas: Canvas) {
+    override fun draw(minMax: MetroViewScaleMinMax, movePoint: PointF, zoom: Float, canvas: Canvas) {
 
 
         val minX = 0
@@ -44,11 +44,22 @@ class Station(val id: String,val lat:Float, val lng: Float,
 
 
         ////////////canvase
-        val cminX = 0
-        val cminY = 0
-        val cmaxX = canvas.width
-        val cmaxY = canvas.height
+//        val cmaxX = canvas.width
+//        val cmaxY = canvas.height
+        val cmaxX = ((canvas.width * zoom) / 100)
+        val cmaxY = ((canvas.height * zoom) / 100)
 
+
+
+        ///
+//        movePoint.x = ((movePoint.x * zoom) / 100)
+//        movePoint.y = ((movePoint.y * zoom) / 100)
+//        movePoint.x = (movePoint.x + (canvas.width - cmaxX))/2
+//        movePoint.y = (movePoint.y + (canvas.height - cmaxY))/2
+
+
+
+//        Log.d("Station", "w:"+canvas.width+" h:"+canvas.height+" x:"+cmaxX+"  y:"+cmaxY+" zoom : "+zoom+" mx:"+movePoint.x+" my:"+movePoint.y)
         /*
         전체값의 몇 퍼센트는 얼마? 계산법 공식
         전체값 X 퍼센트 ÷ 100
@@ -64,8 +75,8 @@ class Station(val id: String,val lat:Float, val lng: Float,
 //        canvas.drawColor(Color.WHITE)
         val paint = Paint()
         paint.color = Color.parseColor(color)
-        paint.strokeWidth = 5f
-        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, 5f, paint)
+        paint.strokeWidth = (5f * zoom) / 100
+        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, (5f * zoom) / 100, paint)
 //        Log.d("onDraw", "size: w:"+canvas.width+" h:"+canvas.height+ "  --> "+lat+" "+ lng)
 
 

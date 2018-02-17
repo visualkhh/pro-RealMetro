@@ -29,6 +29,7 @@ class MainActivity : AbstractAsyncActivity () {
         }
         button2.setOnClickListener{
 //            MetroManager.queuePut("1002")
+            metro.defaultSetting()
         }
         button3.setOnClickListener{
             metro.draws.clear()

@@ -15,8 +15,11 @@ class MetroView :View, View.OnTouchListener{
 //    var draws = ArrayList<Class<out MetroDrawable>>()
 
     var zoom: Float = 100f
-    var downPoint: PointF? = null
+    var upZoom: Float = 100f
+    val downPoint: Point = Point(0,0)
     var doubleDownRect: Rect = Rect(0,0,0,0)
+    var dragRect: Rect = Rect(0,0,0,0)
+
     var movePoint: PointF = PointF(0f,0f)
     var upMovePoint: PointF = PointF(0f,0f)
 
@@ -46,6 +49,7 @@ class MetroView :View, View.OnTouchListener{
         paint.style = Paint.Style.FILL
         canvas.drawRect(Rect(0,0,width,height), paint)
 
+
         var minMax = MetroViewScaleMinMax(Float.MAX_VALUE,Float.MIN_VALUE,Float.MAX_VALUE,Float.MIN_VALUE)
         draws.forEach{
             minMax.minY = Math.min(it.getY(), minMax.minY)
@@ -53,7 +57,14 @@ class MetroView :View, View.OnTouchListener{
             minMax.minX = Math.min(it.getX(), minMax.minX)
             minMax.maxX = Math.max(it.getX(), minMax.maxX)
         }
-        draws.forEach{it.draw(minMax, movePoint, zoom, canvas)}
+//        draws.forEach{it.draw(minMax, movePoint, zoom, canvas)}
+        draws.forEach{it.draw(minMax, dragRect, zoom, canvas)}
+
+
+        /////////
+        paint.color = Color.YELLOW
+        paint.style = Paint.Style.FILL
+        canvas.drawRect(dragRect, paint)
 
 
 
@@ -106,8 +117,16 @@ class MetroView :View, View.OnTouchListener{
             MotionEvent.ACTION_MOVE -> {
 
                 downPoint = downPoint?.let { it } ?: PointF(event.x, event.y)
+                dragRect.set(
+                        Math.min(downPoint!!.x, event.x).toInt(),
+                        Math.min(downPoint!!.y, event.y).toInt(),
+                        Math.max(downPoint!!.x, event.x).toInt(),
+                        Math.max(downPoint!!.y, event.y).toInt()
+                )
                 movePoint.x = upMovePoint.x + (center.x - downPoint!!.x)
                 movePoint.y = upMovePoint.y + (center.y - downPoint!!.y)
+
+
 
 
 
@@ -129,6 +148,13 @@ class MetroView :View, View.OnTouchListener{
                             Math.max(event.getY(0),event.getY(1)).toInt()
                     )
 
+//                    var dat = Math.pow(doubleDownRect.width().toDouble(),2.0) + Math.pow(doubleDownRect.height().toDouble(),2.0)
+//                    val at = Math.pow(atDoubleDownRect.width().toDouble(),2.0) + Math.pow(atDoubleDownRect.height().toDouble(),2.0)
+//                    val ch = ((at.toFloat() / dat.toFloat()).toFloat() * 100f) - 100f
+//                    var czoom = zoom + ch
+//                    if(czoom<=1000 && czoom>=10){
+//                        zoom = czoom
+//                    }
 
                     /*
                         전체값에서 일부값은 몇 퍼센트? 계산법 공식
@@ -138,25 +164,32 @@ class MetroView :View, View.OnTouchListener{
                      */
                     val dat = doubleDownRect.width() * doubleDownRect.height()
                     val at = atDoubleDownRect.width() * atDoubleDownRect.height()
-//                    val ch = ((at.toFloat() / dat.toFloat()).toFloat() * 100f) - 100f
-//                    val czoom = zoom + (ch / 2)
                     val ch = ((at.toFloat() / dat.toFloat()).toFloat() * 100f) - 100f
-                    var czoom = zoom + (ch / 2)
+//                    var czoom = zoom + (ch / 2)
+
+                    /*
+                    전체값의 몇 퍼센트는 얼마? 계산법 공식
+                    전체값 X 퍼센트 ÷ 100
+                    예제) 300의 35퍼센트는 얼마?
+                    답) 105
+                     */
+                    var czoom = upZoom + ((zoom * ch) / 100)
+
                     if(czoom<=1000 && czoom>=10){
                         zoom = czoom
                     }
 
 
-                    Log.d("MetroView", "ddRect w:"+doubleDownRect.width()+" h:"+doubleDownRect.height())
+                    Log.d("MetroView", "ddRect w:"+doubleDownRect.width()+" h:"+doubleDownRect.height()+ " z:"+zoom+"  ch:"+ch )
 
                 }
 
 
-                var rr = ""
-                for (i in 0 until event.pointerCount) {
-                    rr += ", "+i+"(id:"+event.getPointerId(i)+", x:"+ event.getX(i)+", y:"+event.getY(i)
-                }
-                Log.d("phoro", rr+" 손가락으로 움직이는 중 "+downPoint?.x + "  "+downPoint?.y+"  zoom:"+zoom)
+//                var rr = ""
+//                for (i in 0 until event.pointerCount) {
+//                    rr += ", "+i+"(id:"+event.getPointerId(i)+", x:"+ event.getX(i)+", y:"+event.getY(i)
+//                }
+//                Log.d("phoro", rr+" 손가락으로 움직이는 중 "+downPoint?.x + "  "+downPoint?.y+"  zoom:"+zoom)
                 invalidate()
                 r=true
             }
@@ -187,6 +220,7 @@ class MetroView :View, View.OnTouchListener{
                 downPoint = null
                 upMovePoint.x = movePoint.x
                 upMovePoint.y = movePoint.y
+                upZoom = zoom
 //                if(event.pointerCount>1){
 //                    upPoint1 = PointF(event.getX(0),event.getY(0))
 //                    upPoint2 = PointF(event.getX(1),event.getY(1))
@@ -196,6 +230,7 @@ class MetroView :View, View.OnTouchListener{
                 downPoint = null
                 upMovePoint.x = movePoint.x
                 upMovePoint.y = movePoint.y
+                upZoom = zoom
                 Log.d("phoro", "손가락 땠음")
             }
         }
@@ -206,6 +241,7 @@ class MetroView :View, View.OnTouchListener{
 
     fun defaultSetting(){
         zoom = 100f
+        upZoom = 100f
         downPoint = null
         doubleDownRect = Rect(0,0,0,0)
         movePoint = PointF(0f,0f)

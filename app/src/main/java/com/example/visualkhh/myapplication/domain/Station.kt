@@ -1,9 +1,6 @@
 package com.example.visualkhh.myapplication.domain
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PointF
+import android.graphics.*
 import android.util.Log
 import com.example.visualkhh.myapplication.view.MetroDrawable
 import com.example.visualkhh.myapplication.view.MetroViewScaleMinMax
@@ -20,7 +17,7 @@ class Station(val id: String,val lat:Float, val lng: Float,
                    val type: TYPE = TYPE.NORMAL) : MetroDrawable{
     enum class TYPE { NORMAL, BROKEN }
 
-    override fun draw(minMax: MetroViewScaleMinMax, movePoint: PointF, zoom: Float, canvas: Canvas) {
+    override fun draw(minMax: MetroViewScaleMinMax, drag: Rect, zoom: Float, canvas: Canvas) {
 
 
         val minX = 0
@@ -76,14 +73,12 @@ class Station(val id: String,val lat:Float, val lng: Float,
         val paint = Paint()
         paint.color = Color.parseColor(color)
         paint.strokeWidth = (5f * zoom) / 100
-        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, (5f * zoom) / 100, paint)
+//        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, (5f * zoom) / 100, paint)
+
+//        canvas.drawCircle(drag.width() + catX, drag.height() - catY, (5f * zoom) / 100, paint)
+        canvas.drawCircle(catX, catY, (5f * zoom) / 100, paint)
 //        Log.d("onDraw", "size: w:"+canvas.width+" h:"+canvas.height+ "  --> "+lat+" "+ lng)
-
-
-
     }
-
     override fun getX() = lng //경도 그리니치 천문대로부터 서쪽으로 180도  동쪽으로 -180도
-
     override fun getY() = lat //위도  지구 내부가운데에서부터 북방부로 90도   남반부로 -90
 }

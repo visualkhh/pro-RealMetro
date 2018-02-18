@@ -29,7 +29,7 @@ object  MetroManager {
             Line(id = "1075", name = "분당선"),
             Line(id = "1065", name = "공항철도"),
             Line(id = "1069", name = "인천1호선"),
-            Line(id = "1069", name = "인천1호선"),
+            Line(id = "1069", name = "인천2호선"),
             Line(id = "1077", name = "신붕당선"),
             Line(id = "1071", name = "수인선"),
             Line(id = "1079", name = "용인에버라인"),
@@ -86,6 +86,8 @@ object  MetroManager {
                                 stations.filter { it.name.equals(train.statnNm+"역") }.forEach{
                                       if("Y".equals(train.existYn1)) it.upTrain = Train() else it.upTrain = null
                                       if("Y".equals(train.existYn2)) it.downTrain = Train() else it.downTrain = null
+//                                      if("N".equals(train.existYn1)) it.upTrain = Train() else it.upTrain = null
+//                                      if("N".equals(train.existYn2)) it.downTrain = Train() else it.downTrain = null
                                 }
                             }
 

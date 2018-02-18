@@ -80,16 +80,31 @@ class Station(val id: String,val lat:Float, val lng: Float,
 //        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, (5f * zoom) / 100, paint)
         var paint = Paint()
         paint.color = Color.parseColor(color)
-        paint.strokeWidth = 5f
-        canvas.drawCircle(catX, catY, 5f, paint)
+//        paint.strokeWidth = 3f
+        canvas.drawCircle(catX, catY, 4f, paint)
 
 
         val textPaint = TextPaint()
         textPaint.isAntiAlias = true
-        textPaint.textSize = 4f
+        textPaint.textSize = 3f
 //        textPaint.color = Color.parseColor(color)
         textPaint.color = Color.BLACK
-        canvas.drawText((upTrain?.let { "▴" }?:run { "" })+name+(downTrain?.let { "▼" }?:run { "" }),catX-5,catY-5,textPaint)
+        canvas.drawText((upTrain?.let { "▴" }?:run { "" })+name+(downTrain?.let { "▼" }?:run { "" }),catX-5,catY,textPaint)
+
+
+
+
+        upTrain?.let {
+            var paint = Paint()
+            paint.color = Color.RED
+            canvas.drawCircle(catX-2, catY, 1f, paint)
+        }
+        downTrain?.let {
+            var paint = Paint()
+            paint.color = Color.BLUE
+            canvas.drawCircle(catX+2, catY, 1f, paint)
+        }
+
 
 //        canvas.drawCircle(drag.width() + catX, drag.height() - catY, (5f * zoom) / 100, paint)
 

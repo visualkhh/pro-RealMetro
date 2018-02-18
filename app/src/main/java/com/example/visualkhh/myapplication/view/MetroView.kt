@@ -258,7 +258,7 @@ class MetroView :View, View.OnTouchListener{
 
         //These two constants specify the minimum and maximum zoom
         private val MIN_ZOOM = 1f
-        private val MAX_ZOOM = 5f
+        private val MAX_ZOOM = 10f
 
         //These constants specify the mode that we're in
         private val NONE = 0

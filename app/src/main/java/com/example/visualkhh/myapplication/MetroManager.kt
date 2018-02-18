@@ -5,6 +5,7 @@ import com.example.visualkhh.myapplication.domain.geometry.naver.NaverSubwayProv
 import com.example.visualkhh.myapplication.domain.subway.bug_go_kr.BusGoLine
 import com.example.visualkhh.myapplication.domain.Line
 import com.example.visualkhh.myapplication.domain.Station
+import com.example.visualkhh.myapplication.domain.Train
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -45,7 +46,7 @@ object  MetroManager {
     var subwayProvider : NaverSubwayProvider? = null
     val threadSize = 2
     val queue = LinkedBlockingDeque<Line>(100)
-
+    var eventCallBack: LineEvent? = null
 
 
 
@@ -66,6 +67,33 @@ object  MetroManager {
                             val r = Gson().fromJson(data, BusGoLine::class.java)
                             busGolines.put(subwayId, r)
                             Log.d("Request", data.toString())
+
+
+                            val stations = lines.filter { it.key.name.equals(subwayId.name) }.flatMap { it.value }
+                            val unStations = lines.filter { !it.key.name.equals(subwayId.name) }.flatMap { it.value }
+                            stations.forEach{
+                                it.type=Station.TYPE.NORMAL
+                                it.upTrain = null
+                                it.downTrain = null
+                            }
+                            unStations.forEach{
+                                it.type=Station.TYPE.HIDDEN
+                                it.upTrain = null
+                                it.downTrain = null
+                            }
+
+                            r.resultList.forEach { train ->
+                                stations.filter { it.name.equals(train.statnNm+"역") }.forEach{
+                                      if("Y".equals(train.existYn1)) it.upTrain = Train() else it.upTrain = null
+                                      if("Y".equals(train.existYn2)) it.downTrain = Train() else it.downTrain = null
+                                }
+                            }
+
+
+                            eventCallBack?.complete(subwayId)
+
+
+
 
                             if(null==subwayProvider){
                                 reloadStation()

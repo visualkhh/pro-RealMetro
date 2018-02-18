@@ -12,13 +12,16 @@ import android.text.TextPaint
  */
 class Station(val id: String,val lat:Float, val lng: Float,
                    var upTrain: Train? = null, var downTrain: Train? = null,
-                   val name: String= "none",
-                   val color: String = "#000000",
-                   val type: TYPE = TYPE.NORMAL) : MetroDrawable{
-    enum class TYPE { NORMAL, BROKEN }
+                   var name: String= "none",
+                   var color: String = "#000000",
+                   var type: TYPE = TYPE.NORMAL) : MetroDrawable{
+    enum class TYPE { NORMAL, BROKEN, HIDDEN }
 
 
     override fun draw(minMax: MetroViewScaleMinMax, canvas: Canvas) {
+        if(type==TYPE.HIDDEN){
+            return
+        }
 
 
         val minX = 0
@@ -83,9 +86,10 @@ class Station(val id: String,val lat:Float, val lng: Float,
 
         val textPaint = TextPaint()
         textPaint.isAntiAlias = true
-//        textPaint.textSize =
-        textPaint.color = Color.parseColor(color)
-        canvas.drawText(name,catX-2,catY-2,textPaint)
+        textPaint.textSize = 4f
+//        textPaint.color = Color.parseColor(color)
+        textPaint.color = Color.BLACK
+        canvas.drawText((upTrain?.let { "▴" }?:run { "" })+name+(downTrain?.let { "▼" }?:run { "" }),catX-5,catY-5,textPaint)
 
 //        canvas.drawCircle(drag.width() + catX, drag.height() - catY, (5f * zoom) / 100, paint)
 

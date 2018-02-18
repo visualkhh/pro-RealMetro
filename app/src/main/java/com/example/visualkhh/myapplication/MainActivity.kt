@@ -12,7 +12,10 @@ import android.content.DialogInterface
 import com.example.visualkhh.myapplication.R.mipmap.ic_launcher
 
 
-class MainActivity : AbstractAsyncActivity() {
+class MainActivity : AbstractAsyncActivity(),LineEvent {
+    override fun complete(line: Line) {
+        metro.invalidate()
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +25,8 @@ class MainActivity : AbstractAsyncActivity() {
 
     override fun onStart() {
         super.onStart()
-//        MetroManager.startTracking()
+        MetroManager.eventCallBack = this
+        MetroManager.startTracking()
 
 
         val alertBuilder = AlertDialog.Builder(this)
@@ -39,11 +43,12 @@ class MainActivity : AbstractAsyncActivity() {
         alertBuilder.setAdapter(adapter) { dialog, id ->
             // AlertDialog 안에 있는 AlertDialog
             val strName = adapter.getItem(id)
-            val innBuilder = AlertDialog.Builder(this)
-            innBuilder.setMessage(strName.name)
-            innBuilder.setTitle("당신이 선택한 것은 ")
-            innBuilder.setPositiveButton("확인") { dialog, which -> dialog.dismiss() }
-            innBuilder.show()
+            MetroManager.queue.push(strName)
+//            val innBuilder = AlertDialog.Builder(this)
+//            innBuilder.setMessage(strName.name)
+//            innBuilder.setTitle("당신이 선택한 것은 ")
+//            innBuilder.setPositiveButton("확인") { dialog, which -> dialog.dismiss() }
+//            innBuilder.show()
         }
 
 

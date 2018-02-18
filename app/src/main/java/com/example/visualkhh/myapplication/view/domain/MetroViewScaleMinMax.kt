@@ -1,4 +1,4 @@
-package com.example.visualkhh.myapplication.view
+package com.example.visualkhh.myapplication.view.domain
 
 data class MetroViewScaleMinMax(var minY: Float = Float.MAX_VALUE,
                                 var maxY: Float = Float.MIN_VALUE,

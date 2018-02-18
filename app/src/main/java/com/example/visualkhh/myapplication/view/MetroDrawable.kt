@@ -1,13 +1,11 @@
 package com.example.visualkhh.myapplication.view
 
 import android.graphics.Canvas
-import android.graphics.Point
-import android.graphics.PointF
-import android.graphics.Rect
+import com.example.visualkhh.myapplication.view.domain.MetroViewScaleMinMax
 
 
 interface MetroDrawable {
-    fun draw(minMax: MetroViewScaleMinMax, drag:Rect, zoom: Float=100f, canvas: Canvas)
+    fun draw(minMax: MetroViewScaleMinMax, canvas: Canvas)
     fun getX(): Float
     fun getY(): Float
 }

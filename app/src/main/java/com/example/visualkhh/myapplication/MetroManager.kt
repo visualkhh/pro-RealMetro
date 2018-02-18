@@ -14,7 +14,6 @@ import java.util.concurrent.LinkedBlockingDeque
 object  MetroManager {
     val lineIds = listOf<Line>(
             Line(id = "1001", name = "1호선"),
-            Line(id = "1001", name = "1호선"),
             Line(id = "1002", name = "2호선"),
             Line(id = "1003", name = "3호선"),
             Line(id = "1004", name = "4호선"),

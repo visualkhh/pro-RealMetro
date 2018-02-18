@@ -1,14 +1,18 @@
 package com.example.visualkhh.myapplication
 
-import android.graphics.Canvas
+import android.app.AlertDialog
 import android.os.Bundle
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import com.example.visualkhh.AbstractAsyncActivity
-import com.example.visualkhh.myapplication.view.MetroDrawable
-import com.example.visualkhh.myapplication.view.MetroViewSize
+import com.example.visualkhh.myapplication.domain.Line
 import kotlinx.android.synthetic.main.activity_main.*
+import android.content.DialogInterface
+import com.example.visualkhh.myapplication.R.mipmap.ic_launcher
 
 
-class MainActivity : AbstractAsyncActivity () {
+class MainActivity : AbstractAsyncActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,26 +25,50 @@ class MainActivity : AbstractAsyncActivity () {
 //        MetroManager.startTracking()
 
 
+        val alertBuilder = AlertDialog.Builder(this)
+        alertBuilder.setTitle("항목중에 하나를 선택하세요.")
 
+        // List Adapter 생성
+        val adapter = ArrayAdapter<Line>(this,android.R.layout.select_dialog_singlechoice)
+        adapter.addAll(MetroManager.lineIds)
 
+        // 버튼 생성
+        alertBuilder.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }
 
-        button1.setOnClickListener{
-//            MetroManager.queuePut("1001")
+        // Adapter 셋팅
+        alertBuilder.setAdapter(adapter) { dialog, id ->
+            // AlertDialog 안에 있는 AlertDialog
+            val strName = adapter.getItem(id)
+            val innBuilder = AlertDialog.Builder(this)
+            innBuilder.setMessage(strName.name)
+            innBuilder.setTitle("당신이 선택한 것은 ")
+            innBuilder.setPositiveButton("확인") { dialog, which -> dialog.dismiss() }
+            innBuilder.show()
         }
-        button2.setOnClickListener{
-//            MetroManager.queuePut("1002")
-            metro.defaultSetting()
+
+
+
+
+
+
+
+
+
+        button1.setOnClickListener {
+            alertBuilder.show()
+            //            MetroManager.queuePut("1001")
         }
-        button3.setOnClickListener{
+        button2.setOnClickListener {
+            //            MetroManager.queuePut("1002")
+//            metro.defaultSetting()
+        }
+        button3.setOnClickListener {
             metro.draws.clear()
-            for ((k,v) in MetroManager.getStation()){
+            for ((k, v) in MetroManager.getStation()) {
                 metro.draws.addAll(v)
                 metro.invalidate()
             }
         }
-
-
-
 
 
     }
@@ -51,8 +79,6 @@ class MainActivity : AbstractAsyncActivity () {
 //        }
 //        Log.d("subWay", response.toString())
 //    }
-
-
 
 
 //
@@ -115,8 +141,6 @@ class MainActivity : AbstractAsyncActivity () {
 //    }
 
 
-
-
 //    private inner class HttpRequestTask : AsyncTask<Void, Void, ResponseEntity<String>>() {
 //        override fun onPreExecute() {
 //            showLoadingProgressDialog()
@@ -153,9 +177,6 @@ class MainActivity : AbstractAsyncActivity () {
 //            refreshResults(result)
 //        }
 //    }
-
-
-
 
 
     //Deserializer

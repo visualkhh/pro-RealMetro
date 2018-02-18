@@ -1,11 +1,11 @@
 package com.example.visualkhh.myapplication.domain
 
 import android.graphics.*
-import android.util.Log
 import com.example.visualkhh.myapplication.view.MetroDrawable
-import com.example.visualkhh.myapplication.view.MetroViewScaleMinMax
-import com.example.visualkhh.myapplication.view.MetroViewSize
-import kotlin.math.ln
+import com.example.visualkhh.myapplication.view.domain.MetroViewScaleMinMax
+import android.text.TextPaint
+
+
 
 /**
  * Created by visualkhh on 2018. 2. 16..
@@ -17,7 +17,8 @@ class Station(val id: String,val lat:Float, val lng: Float,
                    val type: TYPE = TYPE.NORMAL) : MetroDrawable{
     enum class TYPE { NORMAL, BROKEN }
 
-    override fun draw(minMax: MetroViewScaleMinMax, drag: Rect, zoom: Float, canvas: Canvas) {
+
+    override fun draw(minMax: MetroViewScaleMinMax, canvas: Canvas) {
 
 
         val minX = 0
@@ -41,10 +42,10 @@ class Station(val id: String,val lat:Float, val lng: Float,
 
 
         ////////////canvase
-//        val cmaxX = canvas.width
-//        val cmaxY = canvas.height
-        val cmaxX = ((canvas.width * zoom) / 100)
-        val cmaxY = ((canvas.height * zoom) / 100)
+        val cmaxX = canvas.width
+        val cmaxY = canvas.height
+//        val cmaxX = ((canvas.width * zoom) / 100)
+//        val cmaxY = ((canvas.height * zoom) / 100)
 
 
 
@@ -70,13 +71,46 @@ class Station(val id: String,val lat:Float, val lng: Float,
 
 
 //        canvas.drawColor(Color.WHITE)
-        val paint = Paint()
-        paint.color = Color.parseColor(color)
-        paint.strokeWidth = (5f * zoom) / 100
+//        val paint = Paint()
+//        paint.color = Color.parseColor(color)
+//        paint.strokeWidth = (5f * zoom) / 100
 //        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, (5f * zoom) / 100, paint)
+        var paint = Paint()
+        paint.color = Color.parseColor(color)
+        paint.strokeWidth = 5f
+        canvas.drawCircle(catX, catY, 5f, paint)
+
+
+        val textPaint = TextPaint()
+        textPaint.isAntiAlias = true
+//        textPaint.textSize =
+        textPaint.color = Color.parseColor(color)
+        canvas.drawText(name,catX-2,catY-2,textPaint)
 
 //        canvas.drawCircle(drag.width() + catX, drag.height() - catY, (5f * zoom) / 100, paint)
-        canvas.drawCircle(catX, catY, (5f * zoom) / 100, paint)
+
+//        var marginX = 0
+//        var marginY = 0
+//        lastDownPoint = firstDownPoint?.let{it}?:lastDownPoint
+//        lastDownPoint?.let {
+////            marginX = (firstDownPoint.x - Math.min(drag.left, drag.right)).toInt()
+////            marginY = (firstDownPoint.y - Math.min(drag.top, drag.bottom)).toInt()
+//            lastDownPoint.x = it.x
+//            lastDownPoint.y = it.y
+//            if(drag.left < it.x){
+//                marginX = -drag.width()
+//            }
+//            if(drag.top < it.y){
+//                marginY = -drag.height()
+//            }
+//            if(drag.right > it.x){
+//                marginX = +drag.width()
+//            }
+//            if(drag.bottom > it.y){
+//                marginY = +drag.height()
+//            }
+//        }
+//        canvas.drawCircle(marginX+catX, marginY+catY, (5f * zoom) / 100, paint)
 //        Log.d("onDraw", "size: w:"+canvas.width+" h:"+canvas.height+ "  --> "+lat+" "+ lng)
     }
     override fun getX() = lng //경도 그리니치 천문대로부터 서쪽으로 180도  동쪽으로 -180도

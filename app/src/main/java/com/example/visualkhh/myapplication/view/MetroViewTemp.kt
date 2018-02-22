@@ -120,7 +120,7 @@ class MetroViewTemp :View, View.OnTouchListener{
             minMax.maxX = Math.max(it.getX(), minMax.maxX)
         }
 //        draws.forEach{it.draw(minMax, movePoint, firstDownPoint, dragRect, zoom, canvas)}
-        draws.forEach{it.draw(minMax, canvas)}
+        draws.forEach{it.draw(minMax, canvas,null)}
 
 //        canvas.rotate(11f)
 //        canvas.skew(-0.1f,0f)

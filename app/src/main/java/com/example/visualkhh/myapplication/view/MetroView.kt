@@ -227,7 +227,7 @@ class MetroView :View, View.OnTouchListener{
             minMax.minX = Math.min(it.getX(), minMax.minX)
             minMax.maxX = Math.max(it.getX(), minMax.maxX)
         }
-        draws.forEach{it.draw(minMax, canvas)}
+        draws.forEach{it.draw(minMax, canvas, null)}
 
 
 

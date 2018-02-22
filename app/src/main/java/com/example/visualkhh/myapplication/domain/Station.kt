@@ -18,7 +18,7 @@ class Station(val id: String,val lat:Float, val lng: Float,
     enum class TYPE { NORMAL, BROKEN, HIDDEN }
 
 
-    override fun draw(minMax: MetroViewScaleMinMax, canvas: Canvas) {
+    override fun draw(minMax: MetroViewScaleMinMax, canvas: Canvas, matrix: Matrix?) {
         if(type==TYPE.HIDDEN){
             return
         }
@@ -67,9 +67,9 @@ class Station(val id: String,val lat:Float, val lng: Float,
         예제) 300의 35퍼센트는 얼마?
         답) 105
          */
-        val catX = (cmaxX * atXPer) / 100
+        var catX = (cmaxX * atXPer) / 100
 //        val catY = (cmaxY * atYPer) / 100
-        val catY = cmaxY - (cmaxY * atYPer) / 100 //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+        var catY = cmaxY - (cmaxY * atYPer) / 100 //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
 
 
 
@@ -80,8 +80,19 @@ class Station(val id: String,val lat:Float, val lng: Float,
 //        canvas.drawCircle(movePoint.x + catX, movePoint.y + catY, (5f * zoom) / 100, paint)
         var paint = Paint()
         paint.color = Color.parseColor(color)
-//        paint.strokeWidth = 3f
-        canvas.drawCircle(catX, catY, 4f, paint)
+        paint.strokeWidth = 10f
+//        canvas.drawCircle(catX, catY, 4f, paint)
+        matrix?.let {
+            val matrixValues = FloatArray(9)
+            matrix.getValues(matrixValues)
+            catX = catX * matrixValues[0] + catY * matrixValues[1] + matrixValues[2]
+            catY = catX * matrixValues[3] + catY * matrixValues[4] + matrixValues[5]
+
+        }
+
+        canvas.drawPoint(catX, catY, paint)
+
+
 
 
         val textPaint = TextPaint()

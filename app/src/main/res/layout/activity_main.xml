@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.visualkhh.myapplication.MainActivity" android:orientation="vertical"
+        tools:context="com.visualkhh.app.realmetro.RealMetroActivity" android:orientation="vertical"
         android:id="@+id/activity_main">
 
     <!--https://github.com/googlemaps/android-samples.git-->
@@ -18,7 +18,7 @@
         <!--&gt;-->
     <!--</fragment>-->
 
-    <com.example.visualkhh.myapplication.view.PaintView
+    <com.visualkhh.app.realmetro.view.PaintView
             android:id="@+id/metro" android:layout_weight="1" android:visibility="visible"
             android:layout_width="match_parent" android:layout_height="match_parent"/>
     <LinearLayout
@@ -30,8 +30,8 @@
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Real Line" />
+            android:layout_weight="1"/>
+            android:text="Real Time Line" />
 
         <Button
                 android:text="All"

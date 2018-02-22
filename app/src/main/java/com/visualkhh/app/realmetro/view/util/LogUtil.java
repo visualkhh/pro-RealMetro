@@ -1,7 +1,7 @@
 package com.visualkhh.app.realmetro.view.util;
 
 import android.util.Log;
-import com.example.visualkhh.myapplication.BuildConfig;
+import com.visualkhh.app.realmetro.BuildConfig;
 
 /**
  * Created by lht-Mac on 2017/9/29.

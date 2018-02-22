@@ -17,7 +17,7 @@ class RealMetroActivity : AbstractAsyncActivity(), StationEvent {
     override fun complete(stations: Map<Line, List<Station>>, stationMinX: Float, stationMaxX: Float, stationMinY: Float, stationMaxY: Float) {
         metro.clear(false)
         metro.reset()
-        metro.addText("visualkhh@gmail.com",20f,20f)
+        metro.addText("visualkhh@gmail.com",15f,30f)
         var ats = stations.flatMap {it.value}
         ats.forEach{
             val minX = 0

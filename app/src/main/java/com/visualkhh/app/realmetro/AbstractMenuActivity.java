@@ -22,7 +22,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.example.visualkhh.myapplication.R;
 
 /**
  * @author Roy Clarkson
@@ -43,6 +42,7 @@ public abstract class AbstractMenuActivity extends Activity {
 //		final ListView listViewMenu = (ListView) this.findViewById(R.id.list_view_menu_items);
 //		listViewMenu.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getMenuItems()));
 //		listViewMenu.setOnItemClickListener(getMenuOnItemClickListener());
+		super.onCreate(savedInstanceState);
 	}
 
 	// ***************************************

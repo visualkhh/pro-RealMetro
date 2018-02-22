@@ -21,13 +21,13 @@ class StationDrawEvent(val station: Station) : DrawEventCallBack {
             var subPaint = Paint()
             subPaint.color = Color.RED
             subPaint.setStrokeWidth(0f)
-            canvas.drawCircle(x - (stationSize/2), y, (1f* paint.scale), subPaint)
+            canvas.drawCircle(x + (stationSize/2), y, (1f* paint.scale), subPaint)
         }
         station.downTrain?.let {
             var subPaint = Paint()
             subPaint.color = Color.BLUE
             subPaint.setStrokeWidth(0f)
-            canvas.drawCircle(x + (stationSize/2), y, (1f* paint.scale), subPaint)
+            canvas.drawCircle(x - (stationSize/2), y, (1f* paint.scale), subPaint)
         }
 
         ////////////text
@@ -46,7 +46,7 @@ class StationDrawEvent(val station: Station) : DrawEventCallBack {
         val hh = height/2
 
 
-        LogUtil.d("draw (x:"+x+" y:"+y+") w:"+width+" h:"+height+"   wh:"+wh+" hh:"+hh)
+//        LogUtil.d("draw (x:"+x+" y:"+y+") w:"+width+" h:"+height+"   wh:"+wh+" hh:"+hh)
         canvas.drawText(station.name,x-wh,y-hh,textPaint)
 //        canvas.drawText(station.name,x,y,textPaint)
 

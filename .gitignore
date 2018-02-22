@@ -1,4 +1,5 @@
 *.iml
+app/release/
 *.bat
 .gradle
 /local.properties

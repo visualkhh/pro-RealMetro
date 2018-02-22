@@ -7,7 +7,7 @@ import android.support.annotation.ColorRes
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.example.visualkhh.myapplication.view.domain.MetroViewScaleMinMax
+import com.example.visualkhh.myapplication.DrawEventCallBack
 import com.example.visualkhh.myapplication.view.pojo.*
 import com.example.visualkhh.myapplication.view.util.BitmapUtil
 import com.example.visualkhh.myapplication.view.util.Constant
@@ -35,10 +35,10 @@ class PaintView : View {
 
     //Background Color
     //背景色
-    private var mBgColor = Color.BLACK
+    private var mBgColor = Color.WHITE
     //Paint List for Stroke
     //绘制笔迹Paint列表
-    private val mPaintList = ArrayList<SerializablePaint>()
+    private var mPaintList = ArrayList<SerializablePaint>()
 
     private var mLastDimensionW = -1
     private var mLastDimensionH = -1
@@ -48,7 +48,7 @@ class PaintView : View {
     private var mTextRectPaint: SerializablePaint? = null
     //Paint List for Stroke
     //绘制文字Paint列表
-    private val mTextPaintList = ArrayList<SerializablePaint>()
+    private var mTextPaintList = ArrayList<SerializablePaint>()
 
     //Background Image
     //背景图
@@ -83,7 +83,7 @@ class PaintView : View {
      */
     var isGestureEnable = true
     private var bGestureMoving = false
-    private var mScaleMax = 2f
+    private var mScaleMax = 10f
     private var mScaleMin = 0.5f
 
     //Center Point of Two Fingers
@@ -99,10 +99,10 @@ class PaintView : View {
     private var mCurrentScale: Float = 0.toFloat()
 
     //整体矩阵
-    private val mMainMatrix = Matrix()
-    private val mMainMatrixValues = FloatArray(9)
+    private var mMainMatrix = Matrix()
+    private var mMainMatrixValues = FloatArray(9)
     //当次矩阵
-    private val mCurrentMatrix = Matrix()
+    private var mCurrentMatrix = Matrix()
 
     /**
      * 获得当前笔迹
@@ -125,7 +125,7 @@ class PaintView : View {
         mOnDrawListener = onDrawListener
     }
 
-    var draws = ArrayList<MetroDrawable>()
+//    var draws = ArrayList<MetroDrawable>()
 
     constructor(context: Context) : super(context) {
         init()
@@ -202,6 +202,19 @@ class PaintView : View {
         mLastDimensionH = state.lastDimensionH
     }
 
+    fun addDrawEvent(x: Float, y: Float,drawEvents: DrawEventCallBack, invalidate: Boolean = true) {
+//        for(at in drawEvents) {
+//            val drawEvent = DrawEvent(x, y, currentTextPaint)
+//            drawEvent.drawEventCallBack = at
+//            mDrawShapes!!.add(drawEvent)
+//        }
+        val drawEvent = DrawEvent(x, y, currentTextPaint)
+        drawEvent.drawEventCallBack = drawEvents
+        mDrawShapes!!.add(drawEvent)
+        if(invalidate) {
+            invalidate()
+        }
+    }
     /**
      * 添加文字
      * @param text
@@ -281,10 +294,12 @@ class PaintView : View {
      * 清除所有笔迹
      * @return is Undo still available 是否还能撤销
      */
-    fun clear(): Boolean {
+    fun clear(invalidate: Boolean = true): Boolean {
         if (mDrawShapes != null && mDrawShapes!!.size > 0) {
             mDrawShapes!!.clear()
-            invalidate()
+            if(invalidate) {
+                invalidate()
+            }
         }
 
         if (mOnDrawListener != null) {
@@ -426,6 +441,67 @@ class PaintView : View {
         mBgBitmap = bitmap
     }
 
+    fun reset(){
+        mOnDrawListener = null
+
+
+
+        bInited = false
+        mWidth = 0
+        mHeight = 0
+
+        mBgColor = Color.WHITE
+        mPaintList = ArrayList<SerializablePaint>()
+
+        mLastDimensionW = -1
+        mLastDimensionH = -1
+
+        mTextRectPaint = null
+        mTextPaintList = ArrayList<SerializablePaint>()
+
+        mBgBitmap = null
+        mBgPadding = 0
+        mBgPaint = null
+        isPaintEnable = true
+        mCurrentX = 0.toFloat()
+        mCurrentY = 0.toFloat()
+        mCurrentPath = null
+
+        mDrawShapes = ArrayList()
+        bPathDrawing = false
+
+        mGestureState = Constant.GestureState.NONE
+
+
+
+        isGestureEnable = true
+        bGestureMoving = false
+        mScaleMax = 10f
+        mScaleMin = 0.5f
+
+
+        mCurrentCenterX = 0.toFloat()
+        mCurrentCenterY = 0.toFloat()
+
+        mCurrentLength = 0f
+
+        mCurrentDistanceX = 0.toFloat()
+        mCurrentDistanceY = 0.toFloat()
+
+        mCurrentScale = 0.toFloat()
+        mMainMatrix = Matrix()
+        mMainMatrixValues = FloatArray(9)
+        mCurrentMatrix = Matrix()
+        initPaint()
+//        mCurrentScale = scale
+//        mMainMatrix.postScale(mCurrentScale, mCurrentScale, mCurrentCenterX, mCurrentCenterY)
+//        mCurrentMatrix.setScale(mCurrentScale, mCurrentScale, mCurrentCenterX, mCurrentCenterY)
+//        scaleStrokeWidth(mCurrentScale)
+//        mMainMatrix.getValues(mMainMatrixValues)
+//        mCurrentMatrix.reset()
+//        invalidate()
+    }
+
     private fun resizeBitmap() {
         if (mBgBitmap == null) {
             return
@@ -520,16 +596,14 @@ class PaintView : View {
 
         when (mGestureState) {
             Constant.GestureState.DRAG -> {
-                //                setDragMode();
+//                                setDragMode();
                 mMainMatrix.postTranslate(mCurrentDistanceX, mCurrentDistanceY)
                 mCurrentMatrix.setTranslate(mCurrentDistanceX, mCurrentDistanceY)
             }
             Constant.GestureState.ZOOM -> {
-                //                setZoomMode();
-                mMainMatrix.postScale(mCurrentScale, mCurrentScale,
-                        mCurrentCenterX, mCurrentCenterY)
-                mCurrentMatrix.setScale(mCurrentScale, mCurrentScale,
-                        mCurrentCenterX, mCurrentCenterY)
+//                                setZoomMode();
+                mMainMatrix.postScale(mCurrentScale, mCurrentScale, mCurrentCenterX, mCurrentCenterY)
+                mCurrentMatrix.setScale(mCurrentScale, mCurrentScale, mCurrentCenterX, mCurrentCenterY)
                 scaleStrokeWidth(mCurrentScale)
             }
             Constant.GestureState.NONE -> mCurrentMatrix.reset()

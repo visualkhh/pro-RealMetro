@@ -10,12 +10,51 @@ import com.example.visualkhh.myapplication.domain.Line
 import kotlinx.android.synthetic.main.activity_main.*
 import android.content.DialogInterface
 import com.example.visualkhh.myapplication.R.mipmap.ic_launcher
+import com.example.visualkhh.myapplication.domain.Station
+import com.example.visualkhh.myapplication.view.domain.MetroViewScaleMinMax
+import com.example.visualkhh.myapplication.view.util.LogUtil
+import java.util.ArrayList
 
 
-class MainActivity : AbstractAsyncActivity(),LineEvent {
-    override fun complete(line: Line) {
+class MainActivity : AbstractAsyncActivity(), StationEvent {
+    override fun complete(stations: Map<Line, List<Station>>, stationMinX: Float, stationMaxX: Float, stationMinY: Float, stationMaxY: Float) {
+
+//        metro.add
+
+        metro.clear(false)
+        metro.reset()
+        metro.addText("visualkhh@gmail.com",20f,20f)
+        var ats = stations.flatMap {it.value}
+        ats.forEach{
+            val minX = 0
+            val minY = 0
+            val maxX = stationMaxX - stationMinX
+            val maxY = stationMaxY - stationMinY
+            val atX = it.lng - stationMinX
+            val atY = it.lat - stationMinY   //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+            val atXPer = (atX / maxX) * 100
+            val atYPer = (atY / maxY) * 100
+            ////////////canvase
+            val cmaxX = metro.width
+            val cmaxY = metro.height
+            var catX = (cmaxX * atXPer) / 100
+            var catY = cmaxY - (cmaxY * atYPer) / 100 //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+
+//            LogUtil.d("catX:"+catX+", catY:"+catY)
+//            metro.addText(it.name,catX, catY)
+            var stationImp = StationDrawEvent(it)
+            metro.addDrawEvent(catX,catY,stationImp,false)
+        }
         metro.invalidate()
+
+
+//        draws.forEach{it.draw(minMax, canvas, mCurrentMatrix)}
+
+
+
+//        metro.invalidate()
     }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,19 +64,20 @@ class MainActivity : AbstractAsyncActivity(),LineEvent {
 
     override fun onStart() {
         super.onStart()
-        MetroManager.eventCallBack = this
+        MetroManager.stationCallBack = this
         MetroManager.startTracking()
+        MetroManager.reloadStation()
 
 
         val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setTitle("항목중에 하나를 선택하세요.")
+        alertBuilder.setTitle("select one of the items.")
 
         // List Adapter 생성
         val adapter = ArrayAdapter<Line>(this,android.R.layout.select_dialog_singlechoice)
         adapter.addAll(MetroManager.lineIds)
 
         // 버튼 생성
-        alertBuilder.setNegativeButton("취소") { dialog, which -> dialog.dismiss() }
+        alertBuilder.setNegativeButton("cancel") { dialog, which -> dialog.dismiss() }
 
         // Adapter 셋팅
         alertBuilder.setAdapter(adapter) { dialog, id ->
@@ -64,15 +104,9 @@ class MainActivity : AbstractAsyncActivity(),LineEvent {
             //            MetroManager.queuePut("1001")
         }
         button2.setOnClickListener {
-            //            MetroManager.queuePut("1002")
-//            metro.defaultSetting()
-        }
-        button3.setOnClickListener {
-            metro.draws.clear()
-            for ((k, v) in MetroManager.getStation()) {
-                metro.draws.addAll(v)
-                metro.invalidate()
-            }
+
+            metro.reset()
+            MetroManager.reloadStation()
         }
 
 

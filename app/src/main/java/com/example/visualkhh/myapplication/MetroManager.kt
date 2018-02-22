@@ -6,6 +6,7 @@ import com.example.visualkhh.myapplication.domain.subway.bug_go_kr.BusGoLine
 import com.example.visualkhh.myapplication.domain.Line
 import com.example.visualkhh.myapplication.domain.Station
 import com.example.visualkhh.myapplication.domain.Train
+import com.example.visualkhh.myapplication.view.util.LogUtil
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -46,9 +47,14 @@ object  MetroManager {
     var subwayProvider : NaverSubwayProvider? = null
     val threadSize = 2
     val queue = LinkedBlockingDeque<Line>(100)
-    var eventCallBack: LineEvent? = null
+    var stationCallBack: StationEvent? = null
 
 
+
+    var minLat = Float.MAX_VALUE
+    var maxLat = Float.MIN_VALUE
+    var minLng = Float.MAX_VALUE
+    var maxLng = Float.MIN_VALUE
 
     fun queuePut(id: String){
         queue.put(getSubwayId(id))
@@ -82,24 +88,20 @@ object  MetroManager {
                                 it.downTrain = null
                             }
 
+
+                            val rrr: LinkedHashMap<Line, List<Station>> = LinkedHashMap()
+                            val rs = ArrayList<Station>()
                             r.resultList.forEach { train ->
                                 stations.filter { it.name.equals(train.statnNm+"역") }.forEach{
-                                      if("Y".equals(train.existYn1)) it.upTrain = Train() else it.upTrain = null
-                                      if("Y".equals(train.existYn2)) it.downTrain = Train() else it.downTrain = null
-//                                      if("N".equals(train.existYn1)) it.upTrain = Train() else it.upTrain = null
-//                                      if("N".equals(train.existYn2)) it.downTrain = Train() else it.downTrain = null
+                                    if("Y".equals(train.existYn1)) it.upTrain = Train() else it.upTrain = null
+                                    if("Y".equals(train.existYn2)) it.downTrain = Train() else it.downTrain = null
+                                    rs.add(it)
                                 }
                             }
 
+                            rrr.put(subwayId,rs)
+                            stationCallBack?.complete(rrr,minLng,maxLng,minLat,maxLat)
 
-                            eventCallBack?.complete(subwayId)
-
-
-
-
-                            if(null==subwayProvider){
-                                reloadStation()
-                            }
 
                         }
                     }
@@ -109,13 +111,7 @@ object  MetroManager {
         }
     }
 
-    fun getStation(): LinkedHashMap<Line, List<Station>> {
-        if(lines.size<=0){
-            reloadStation()
-        }
-        return lines
-    }
-    private fun reloadStation(){
+    fun reloadStation(){
         Fuel.get("https://map.naver.com/external/SubwayProvide.xml?requestFile=metaData.json&readPath=1000&version=5.4").responseString(Charset.forName("UTF-8")) { request, response, result ->
             val (data, error) = result
                 if (null == error) {
@@ -123,10 +119,6 @@ object  MetroManager {
                     var personList: List<NaverSubwayProvider> = Gson().fromJson(data, object : TypeToken<List<NaverSubwayProvider>>() {}.type)
                     subwayProvider = personList.get(0)
                     /////////parsing
-//                    minLat = Float.MAX_VALUE
-//                    maxLat = Float.MIN_VALUE
-//                    minLng = Float.MAX_VALUE
-//                    maxLng = Float.MIN_VALUE
 
                     subwayProvider!!.subwayTotalLineSection.forEach { lineIt ->
                         val line = Line(lineIt.stationCode, color = lineIt.color)
@@ -134,10 +126,10 @@ object  MetroManager {
                         val list = subwayProvider!!.realInfo.filter { line.id==it.logicalLine.code }.forEach { stationIt ->
                             val station = Station(stationIt.id, stationIt.latitude.toFloat(), stationIt.longitude.toFloat(), name = stationIt.name, color = lineIt.color)
                             line.name = stationIt.logicalLine.name
-//                            minLat = Math.min(station.lat, minLat)
-//                            maxLat = Math.max(station.lat, maxLat)
-//                            minLng = Math.min(station.lng, minLng)
-//                            maxLng = Math.max(station.lng, maxLng)
+                            minLat = Math.min(station.lat, minLat)
+                            maxLat = Math.max(station.lat, maxLat)
+                            minLng = Math.min(station.lng, minLng)
+                            maxLng = Math.max(station.lng, maxLng)
 //                            if("2".equals(stationIt.logicalLine.code))
                             stations.add(station)
                         }
@@ -146,6 +138,8 @@ object  MetroManager {
 //                        stations.sortWith(compareBy (Station::lat, Station::lng))
                         lines.put(line, stations)
                     }
+
+                    stationCallBack?.complete(lines,minLng,maxLng,minLat,maxLat)
                 }
         }
     }

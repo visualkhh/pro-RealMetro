@@ -1,14 +1,15 @@
-package com.visualkhh.app.realmetro
+package com.visualkhh.app.realmetro.manager
 
 import android.util.Log
-import com.visualkhh.app.realmetro.domain.geometry.naver.NaverSubwayProvider
-import com.visualkhh.app.realmetro.domain.subway.bug_go_kr.BusGoLine
-import com.visualkhh.app.realmetro.domain.Line
-import com.visualkhh.app.realmetro.domain.Station
-import com.visualkhh.app.realmetro.domain.Train
+import com.visualkhh.app.realmetro.manager.domain.geometry.naver.NaverSubwayProvider
+import com.visualkhh.app.realmetro.manager.domain.bug_go_kr.BusGoLine
+import com.visualkhh.app.realmetro.manager.domain.Line
+import com.visualkhh.app.realmetro.manager.domain.Station
+import com.visualkhh.app.realmetro.manager.domain.Train
 import com.github.kittinunf.fuel.Fuel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.visualkhh.app.realmetro.view.pojo.StationEvent
 import java.nio.charset.Charset
 import java.util.concurrent.LinkedBlockingDeque
 
@@ -77,17 +78,22 @@ object  MetroManager {
                             val stations = lines.filter { it.key.name.equals(subwayId.name) }.flatMap { it.value }
                             val unStations = lines.filter { !it.key.name.equals(subwayId.name) }.flatMap { it.value }
                             stations.forEach{
-                                it.type=Station.TYPE.NORMAL
+                                it.type= Station.TYPE.NORMAL
                                 it.upTrain = null
                                 it.downTrain = null
                             }
                             unStations.forEach{
-                                it.type=Station.TYPE.HIDDEN
+                                it.type= Station.TYPE.HIDDEN
                                 it.upTrain = null
                                 it.downTrain = null
                             }
 
 
+                            ///////////
+                            var minLat = Float.MAX_VALUE
+                            var maxLat = Float.MIN_VALUE
+                            var minLng = Float.MAX_VALUE
+                            var maxLng = Float.MIN_VALUE
                             val rrr: LinkedHashMap<Line, List<Station>> = LinkedHashMap()
                             val rs = ArrayList<Station>()
                             r.resultList.forEach { train ->
@@ -95,6 +101,10 @@ object  MetroManager {
                                     if("Y".equals(train.existYn1)) it.upTrain = Train() else it.upTrain = null
                                     if("Y".equals(train.existYn2)) it.downTrain = Train() else it.downTrain = null
                                     rs.add(it)
+                                    minLat = Math.min(it.lat, minLat)
+                                    maxLat = Math.max(it.lat, maxLat)
+                                    minLng = Math.min(it.lng, minLng)
+                                    maxLng = Math.max(it.lng, maxLng)
                                 }
                             }
 

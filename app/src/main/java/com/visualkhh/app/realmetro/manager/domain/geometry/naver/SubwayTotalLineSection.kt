@@ -1,4 +1,4 @@
-package com.visualkhh.app.realmetro.domain.geometry.naver
+package com.visualkhh.app.realmetro.manager.domain.geometry.naver
 
 data class SubwayTotalLineSection(val stationCode: String,
                                   val totalLines: String,

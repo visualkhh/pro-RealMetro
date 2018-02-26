@@ -1,4 +1,4 @@
-package com.visualkhh.app.realmetro.domain
+package com.visualkhh.app.realmetro.manager.domain
 
 data class Line(val id: String, var name: String = "none", val color: String = "#333333"){
     override fun toString(): String {

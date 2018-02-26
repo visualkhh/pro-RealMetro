@@ -1,7 +1,7 @@
-package com.visualkhh.app.realmetro.domain
+package com.visualkhh.app.realmetro.manager.domain
 
 import android.graphics.*
-import com.visualkhh.app.realmetro.view.MetroDrawable
+import com.visualkhh.app.realmetro.manager.MetroDrawable
 import com.visualkhh.app.realmetro.view.domain.MetroViewScaleMinMax
 import android.text.TextPaint
 
@@ -10,16 +10,16 @@ import android.text.TextPaint
 /**
  * Created by visualkhh on 2018. 2. 16..
  */
-class Station(val id: String,val lat:Float, val lng: Float,
-                   var upTrain: Train? = null, var downTrain: Train? = null,
-                   var name: String= "none",
-                   var color: String = "#000000",
-                   var type: TYPE = TYPE.NORMAL) : MetroDrawable{
+class Station(val id: String, val lat:Float, val lng: Float,
+              var upTrain: Train? = null, var downTrain: Train? = null,
+              var name: String= "none",
+              var color: String = "#000000",
+              var type: TYPE = TYPE.NORMAL) : MetroDrawable {
     enum class TYPE { NORMAL, BROKEN, HIDDEN }
 
 
     override fun draw(minMax: MetroViewScaleMinMax, canvas: Canvas, matrix: Matrix?) {
-        if(type==TYPE.HIDDEN){
+        if(type== TYPE.HIDDEN){
             return
         }
 

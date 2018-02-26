@@ -1,4 +1,4 @@
-package com.visualkhh.app.realmetro.domain.subway.bug_go_kr
+package com.visualkhh.app.realmetro.manager.domain.bug_go_kr
 
 
 //https://blog.frankel.ch/comparing-lombok-and-kotlin/

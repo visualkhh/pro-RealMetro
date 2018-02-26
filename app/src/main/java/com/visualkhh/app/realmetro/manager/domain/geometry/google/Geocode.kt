@@ -1,4 +1,4 @@
-package com.visualkhh.app.realmetro.domain.geometry.google
+package com.visualkhh.app.realmetro.manager.domain.geometry.google
 
 data class Geocode(val status: String, val results : List<Result>) {
 

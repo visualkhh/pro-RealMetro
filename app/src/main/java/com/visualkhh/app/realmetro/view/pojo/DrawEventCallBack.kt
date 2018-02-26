@@ -1,4 +1,4 @@
-package com.visualkhh.app.realmetro
+package com.visualkhh.app.realmetro.view.pojo
 
 import android.graphics.Canvas
 import com.visualkhh.app.realmetro.view.pojo.SerializablePaint

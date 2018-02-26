@@ -2,45 +2,87 @@ package com.visualkhh.app.realmetro
 
 
 import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
-import com.visualkhh.app.realmetro.AbstractAsyncActivity
-import com.visualkhh.app.realmetro.MetroManager
-import com.visualkhh.app.realmetro.StationDrawEvent
-import com.visualkhh.app.realmetro.StationEvent
-import com.visualkhh.app.realmetro.domain.Line
+import com.visualkhh.app.realmetro.activity.AbstractAsyncActivity
+import com.visualkhh.app.realmetro.manager.domain.Line
 import kotlinx.android.synthetic.main.activity_main.*
-import com.visualkhh.app.realmetro.domain.Station
+import com.visualkhh.app.realmetro.manager.domain.Station
+import com.visualkhh.app.realmetro.manager.MetroManager
+import com.visualkhh.app.realmetro.view.pojo.*
+import android.widget.TextView
+import android.view.ViewGroup
+
+
 
 
 class RealMetroActivity : AbstractAsyncActivity(), StationEvent {
     override fun complete(stations: Map<Line, List<Station>>, stationMinX: Float, stationMaxX: Float, stationMinY: Float, stationMaxY: Float) {
         metro.clear(false)
-        metro.reset()
-        metro.addText("visualkhh@gmail.com",15f,30f)
-        var ats = stations.flatMap {it.value}
-        ats.forEach{
-            val minX = 0
-            val minY = 0
-            val maxX = stationMaxX - stationMinX
-            val maxY = stationMaxY - stationMinY
-            val atX = it.lng - stationMinX
-            val atY = it.lat - stationMinY   //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
-            val atXPer = (atX / maxX) * 100
-            val atYPer = (atY / maxY) * 100
-            ////////////canvase
-            val cmaxX = metro.width
-            val cmaxY = metro.height
-            var catX = (cmaxX * atXPer) / 100
-            var catY = cmaxY - (cmaxY * atYPer) / 100 //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+//        metro.reset()
+//        metro.addText("visualkhh@gmail.com",15f,30f)
 
-//            LogUtil.d("catX:"+catX+", catY:"+catY)
-//            metro.addText(it.name,catX, catY)
-            var stationImp = StationDrawEvent(it)
-            metro.addDrawEvent(catX,catY,stationImp,false)
+//        var ats = stations.flatMap {it.value}
+//        ats.forEach{
+//            val maxX = stationMaxX - stationMinX
+//            val maxY = stationMaxY - stationMinY
+//            val atX = it.lng - stationMinX
+//            val atY = it.lat - stationMinY   //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+//            val atXPer = (atX / maxX) * 100
+//            val atYPer = (atY / maxY) * 100
+//            ////////////canvase
+//            val cmaxX = metro.width
+//            val cmaxY = metro.height
+//            var catX = (cmaxX * atXPer) / 100
+//            var catY = cmaxY - (cmaxY * atYPer) / 100 //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+//
+//            var stationImp = StationDrawEvent(it)
+//            metro.addDrawEvent(catX,catY,stationImp,false)
+//        }
+
+
+        stations.forEach {
+            val path = SerializablePath()
+            val paint = SerializablePaint()
+            paint.style = Paint.Style.STROKE
+//            paint.strokeWidth = 5f
+            paint.color = Color.parseColor(it.key.color)
+
+            var isfirst = true
+            it.value.forEach { sit ->
+                val maxX = stationMaxX - stationMinX
+                val maxY = stationMaxY - stationMinY
+                val atX = sit.lng - stationMinX
+                val atY = sit.lat - stationMinY   //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+                val atXPer = (atX / maxX) * 100
+                val atYPer = (atY / maxY) * 100
+                ////////////canvase
+                val cmaxX = metro.width
+                val cmaxY = metro.height
+                var catX = (cmaxX * atXPer) / 100
+                var catY = cmaxY - (cmaxY * atYPer) / 100 //위도는 아래로 내려가면 갈수록 0에 가까워지기때문에 뒤집기 해줘야한다
+
+                var stationImp = StationDrawEvent(sit)
+                metro.addDrawEvent(catX,catY,stationImp,false)
+
+                if(isfirst){
+                    path.moveTo(catX, catY)
+                    isfirst=false
+                } else {
+                    path.lineTo(catX, catY)
+                }
+            }
+
+            val drawPath = DrawPath(path, paint)
+            metro.addDrawShape(drawPath)
         }
-        metro.invalidate()
 
+
+
+        metro.invalidate()
         dismissProgressDialog()
     }
 
@@ -62,8 +104,31 @@ class RealMetroActivity : AbstractAsyncActivity(), StationEvent {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setTitle("select one of the items.")
 
+
+
         // List Adapter 생성
         val adapter = ArrayAdapter<Line>(this,android.R.layout.select_dialog_singlechoice)
+//        val adapter = ArrayAdapter<Line>(this,R.layout.itemlist)
+
+
+        // Create an ArrayAdapter from List
+//        val adapter = object : ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice, 4d,MetroManager.lineIds) {
+//            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+//                // Get the Item from ListView
+//                val view = super.getView(position, convertView, parent)
+//                // Initialize a TextView for ListView each Item
+//                val tv = view.findViewById<View>(android.R.id.text1) as TextView
+//                // Set the text color of TextView (ListView Item)
+//                tv.setTextColor(Color.RED)
+//                // Generate ListView Item using TextView
+//                return view
+//            }
+//        }
+
+
+
+
+
         adapter.addAll(MetroManager.lineIds)
 
         // 버튼 생성

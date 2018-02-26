@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.visualkhh.app.realmetro;
+package com.visualkhh.app.realmetro.activity;
 
 import android.app.Activity;
 import android.os.Bundle;

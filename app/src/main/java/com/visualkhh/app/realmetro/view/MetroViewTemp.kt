@@ -8,6 +8,7 @@ import android.util.Log
 import java.util.ArrayList
 import android.graphics.*
 import android.view.ScaleGestureDetector
+import com.visualkhh.app.realmetro.manager.MetroDrawable
 import com.visualkhh.app.realmetro.view.domain.MetroViewScaleMinMax
 import com.visualkhh.app.realmetro.view.domain.MetroViewSize
 

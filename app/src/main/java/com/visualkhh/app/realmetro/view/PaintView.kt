@@ -7,7 +7,7 @@ import android.support.annotation.ColorRes
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.visualkhh.app.realmetro.DrawEventCallBack
+import com.visualkhh.app.realmetro.view.pojo.DrawEventCallBack
 import com.visualkhh.app.realmetro.view.pojo.*
 import com.visualkhh.app.realmetro.view.util.BitmapUtil
 import com.visualkhh.app.realmetro.view.util.Constant
@@ -107,7 +107,7 @@ class PaintView : View {
     /**
      * 获得当前笔迹
      */
-    private val currentPaint: SerializablePaint
+    val currentPaint: SerializablePaint
         get() = mPaintList[mPaintList.size - 1]
 
     /**
@@ -150,6 +150,7 @@ class PaintView : View {
         paint.isAntiAlias = true
         paint.isDither = true
         paint.style = Paint.Style.STROKE
+//        paint.style = Paint.Style.FILL
         paint.strokeJoin = Paint.Join.ROUND// 设置外边缘
         paint.strokeCap = Paint.Cap.ROUND// 形状
 
@@ -208,9 +209,15 @@ class PaintView : View {
 //            drawEvent.drawEventCallBack = at
 //            mDrawShapes!!.add(drawEvent)
 //        }
-        val drawEvent = DrawEvent(x, y, currentTextPaint)
+        val drawEvent = DrawEvent(x, y, currentPaint)
         drawEvent.drawEventCallBack = drawEvents
         mDrawShapes!!.add(drawEvent)
+        if(invalidate) {
+            invalidate()
+        }
+    }
+    fun addDrawShape(drawShape: DrawShape, invalidate: Boolean = true) {
+        mDrawShapes!!.add(drawShape)
         if(invalidate) {
             invalidate()
         }
@@ -350,9 +357,12 @@ class PaintView : View {
      * 设置画笔宽度
      * @param width
      */
-    fun setStrokeWidth(width: Int) {
+    private fun setStrokeWidth(width: Int) {
         val paint = SerializablePaint(currentPaint)
         paint.strokeWidth = width.toFloat()
+        mPaintList.add(paint)
+    }
+    fun setPaint(paint: SerializablePaint) {
         mPaintList.add(paint)
     }
 
@@ -520,7 +530,7 @@ class PaintView : View {
     /**
      * 缩放所有笔迹
      */
-    private fun scaleStrokeWidth(scale: Float) {
+    public fun scaleStrokeWidth(scale: Float) {
         for (paint in mPaintList) {
             paint.scale = paint.scale * scale
         }

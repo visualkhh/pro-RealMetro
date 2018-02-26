@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package com.visualkhh.app.realmetro;
+package com.visualkhh.app.realmetro.activity;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.app.ProgressDialog;
 
 /**
  * @author Roy Clarkson
  * @author Pierre-Yves Ricau
  */
-public abstract class AbstractAsyncListActivity extends ListActivity implements AsyncActivity {
+public abstract class AbstractAsyncActivity extends Activity implements AsyncActivity {
 
 	protected static final String TAG = AbstractAsyncActivity.class.getSimpleName();
 
